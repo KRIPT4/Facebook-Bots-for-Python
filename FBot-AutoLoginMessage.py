@@ -11,6 +11,8 @@ import time
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 
+start_time = time.time()		# TIME EXECUTION TEST
+
 #https://github.com/SeleniumHQ/selenium/blob/master/py/selenium/webdriver/chrome/options.py
 
 chrome_options = Options()
@@ -52,3 +54,6 @@ driver.find_element_by_name('view_post').click()
 ## END SEND MESSAGE
 
 driver.quit()
+
+elapsed_time = time.time() - start_time
+print("Elapsed time: %.10f seconds." % elapsed_time)

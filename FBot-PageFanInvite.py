@@ -11,6 +11,8 @@ import time
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 
+start_time = time.time()		# TIME EXECUTION TEST
+
 #https://github.com/SeleniumHQ/selenium/blob/master/py/selenium/webdriver/chrome/options.py
 
 chrome_options = Options()
@@ -56,3 +58,8 @@ while (i < c):
 	i += 1
 print("END SEND LIKE")
 ## END SEN FAN PAGE INVITE
+
+driver.quit()
+
+elapsed_time = time.time() - start_time
+print("Elapsed time: %.10f seconds." % elapsed_time)
