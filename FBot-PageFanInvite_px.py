@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-FBot-AutoLoginMessage.py - Facebook Bots for Python
+FBot-PageFanInvite_px.py - Facebook Bots for Python
 Copyright 2017, KRIPT4
 
 More info:
@@ -19,8 +19,13 @@ from selenium import webdriver
 # For automating data input
 from selenium.webdriver.common.keys import Keys
 
+# For Proxy
+from selenium.webdriver.common.proxy import *
+
 # For providing custom configurations for Chrome to run
 from selenium.webdriver.chrome.options import Options
+
+NewProxy = "PROXYIPADDRESS:PORT"
 
 start_time = time.time()		# TIME EXECUTION TEST
 
@@ -37,6 +42,7 @@ chrome_options.add_argument('--no-referrers')
 chrome_options.add_argument('--allow-running-insecure-content')
 chrome_options.add_argument('--ignore-ssl-errors=true --debug=true')
 chrome_options.add_argument('--window-size=375,733')
+chrome_options.add_argument('--proxy-server=%s' % NewProxy)
 chrome_options.add_experimental_option('prefs', {
     'credentials_enable_service': False,
     'profile': {
@@ -53,7 +59,8 @@ def mainExe():
 
 	varUSER = '==USERNAME=='
 	varPASS = '==PASSWORD=='
-	varMESS = '====TEXT===='
+	i = 1 #START
+	c = 5 #END
 
 	## LOGIN
 	retryElement('//*[@id="u_0_1"]/div[1]/div/input').send_keys(varUSER)
@@ -61,12 +68,17 @@ def mainExe():
 	retryElement('//*[@id="u_0_6"]').click()
 	## END LOGIN
 
-	## SEND MESSAGE:
-	retryElementNAME('xc_message').clear()
-	retryElementNAME('xc_message').send_keys(varMESS)
-	retryElementNAME('view_post').click()
-	time.sleep(1) #CONTROL
-	## END SEND MESSAGE
+	## SEND FAN PAGE INVITE
+	driver.get('https://m.facebook.com/send_page_invite/?pageid=262588213843476')
+	time.sleep(5)
+
+	while (i < c):
+		valuef = '//*[@id="m_invitee_list"]/div[' + str(i) + ']/div[3]/div/div/button'
+		retryElement(valuef).click()
+		time.sleep(2) #OPTIONAL
+		i += 1
+	print("END SEND LIKE")
+	## END SEN FAN PAGE INVITE
 
 	driver.quit()
 
@@ -82,16 +94,6 @@ def retryElement(xpath):
 			time.sleep(0.1)
 			continue
 	brikear(("Error XPATH: %s" % xpath))
-
-def retryElementNAME(namepath):
-	for i in range(0,50):
-		try:
-			element = driver.find_element_by_name(namepath)
-			return element
-		except Exception as e:
-			time.sleep(0.1)
-			continue
-	brikear(("Error NAME: %s" % namepath))
 
 def brikear(msg):
 	print(msg)

@@ -7,41 +7,83 @@ More info:
  * KRIPT4: https://github.com/KRIPT4/Facebook-Bots-for-Python
 """
 
+# Import unittest module for creating unit tests
+import unittest
+
+# Import time module to implement 
 import time
+
+# Import the Selenium 2 module (aka "webdriver")
 from selenium import webdriver
+
+# For automating data input
+from selenium.webdriver.common.keys import Keys
+
+# For providing custom configurations for Chrome to run
 from selenium.webdriver.chrome.options import Options
 
 start_time = time.time()		# TIME EXECUTION TEST
 
-#https://github.com/SeleniumHQ/selenium/blob/master/py/selenium/webdriver/chrome/options.py
-
+# Select which device you want to emulate by uncommenting it
+# More information at: https://sites.google.com/a/chromium.org/chromedriver/mobile-emulation
+mobile_emulation = { "deviceName": "Google Nexus 5"}
 chrome_options = Options()
+chrome_options.add_argument("--disable-infobars")
 chrome_options.add_argument('--disable-extensions')
-chrome_options.add_argument('--allow-running-insecure-content')
+chrome_options.add_argument('--enable-precise-memory-info')
+chrome_options.add_argument("--disable-popup-blocking")
 chrome_options.add_argument('--disable-web-security')
 chrome_options.add_argument('--no-referrers')
-chrome_options.add_argument('--window-size=800,800')
+chrome_options.add_argument('--allow-running-insecure-content')
+chrome_options.add_argument('--ignore-ssl-errors=true --debug=true')
+chrome_options.add_argument('--window-size=375,733')
 chrome_options.add_experimental_option('prefs', {
     'credentials_enable_service': False,
     'profile': {
         'password_manager_enabled': False
     }
 })
-driver = webdriver.Chrome(chrome_options=chrome_options)
-driver.get('https://m.facebook.com/home.php')
+chrome_options.add_experimental_option("mobileEmulation", mobile_emulation)
+global driver
 
-time.sleep(5)
+def mainExe():
+	global driver
+	driver = webdriver.Chrome(chrome_options=chrome_options)
+	driver.get('https://m.facebook.com/home.php')
 
-varUSER = '==USERNAME=='
-varPASS = '==PASSWORD=='
+	varUSER = '==USERNAME=='
+	varPASS = '==PASSWORD=='
 
-## LOGIN
-driver.find_element_by_xpath('//*[@id="u_0_1"]/div[1]/div/input').send_keys(varUSER)
-time.sleep(2)
-driver.find_element_by_xpath('//*[@id="u_0_2"]').send_keys(varPASS)
-time.sleep(3)
-driver.find_element_by_xpath('//*[@id="u_0_6"]').click()
-## END LOGIN
+	## LOGIN
+	retryElement('//*[@id="u_0_1"]/div[1]/div/input').send_keys(varUSER)
+	retryElement('//*[@id="u_0_2"]').send_keys(varPASS)
+	retryElement('//*[@id="u_0_6"]').click()
+	## END LOGIN
 
-elapsed_time = time.time() - start_time
-print("Elapsed time: %.10f seconds." % elapsed_time)
+	elapsed_time = time.time() - start_time
+	print("Elapsed time: %.10f seconds." % elapsed_time)
+
+def retryElement(xpath):
+	for i in range(0,50):
+		try:
+			element = driver.find_element_by_xpath(xpath)
+			return element
+		except Exception as e:
+			time.sleep(0.1)
+			continue
+	brikear(("Error XPATH: %s" % xpath))
+
+def brikear(msg):
+	print(msg)
+	closeDriver()
+	sys.exit(1)
+
+def closeDriver():
+	global driver
+	driver.quit()
+
+try:
+	mainExe()
+except Exception as e:
+	print(e)
+	closeDriver()

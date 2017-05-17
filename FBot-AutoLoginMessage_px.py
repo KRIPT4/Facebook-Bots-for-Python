@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-FBot-AutoLoginMessage.py - Facebook Bots for Python
+FBot-AutoLoginMessage_px.py - Facebook Bots for Python
 Copyright 2017, KRIPT4
 
 More info:
@@ -19,8 +19,13 @@ from selenium import webdriver
 # For automating data input
 from selenium.webdriver.common.keys import Keys
 
+# For Proxy
+from selenium.webdriver.common.proxy import *
+
 # For providing custom configurations for Chrome to run
 from selenium.webdriver.chrome.options import Options
+
+NewProxy = "PROXYIPADDRESS:PORT"
 
 start_time = time.time()		# TIME EXECUTION TEST
 
@@ -37,6 +42,7 @@ chrome_options.add_argument('--no-referrers')
 chrome_options.add_argument('--allow-running-insecure-content')
 chrome_options.add_argument('--ignore-ssl-errors=true --debug=true')
 chrome_options.add_argument('--window-size=375,733')
+chrome_options.add_argument('--proxy-server=%s' % NewProxy)
 chrome_options.add_experimental_option('prefs', {
     'credentials_enable_service': False,
     'profile': {
